@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs').promises
 
 function sleep(milliseconds) {
   var start = new Date().getTime();
@@ -9,12 +9,42 @@ function sleep(milliseconds) {
   }
 }
 
-function readFilePromise() {
-  // psst, the promise should be around here...
+
+function readFilePromise(path) {
+  return new Promise( (resolve, reject) => {
+    fs.readFile(path, 'utf8')
+    .then(data => {
+      resolve(JSON.parse(data));
+    })
+    .catch(err => {
+      reject(err);
+    })
+  })
 }
 
+let result = null;
+
 function matchParentsWithChildren(parentFileName, childrenFileName) {
-  // your code here... (p.s. readFilePromise function(s) should be around here..)
+  sleep(3000);
+  readFilePromise(parentFileName)
+  .then(dataParents => {
+    result = dataParents;
+    return readFilePromise(childrenFileName);
+  }) 
+  .then (dataChildren => {
+    result.forEach(parents => {
+      parents.children = [];
+      dataChildren.forEach(children => {
+          if(parents.last_name === children.family){
+            parents.children.push(children.full_name);
+          }
+      });
+    });
+    console.log(result);
+  })
+  .catch (err => {
+    console.log(`Wrong path (${err.path})`);
+  })
 }
 
 matchParentsWithChildren('./parents.json', './children.json');
