@@ -9,17 +9,50 @@ function sleep(milliseconds) {
   }
 }
 
-function readFilePromise() {
+function readFilePromise(path) {
   // psst, the promise should be around here...
+  return new Promise((res, rej) => {
+    fs.readFile(path,'utf8', (err, data) => {
+      if(err) {
+        rej(err)
+      } else {
+        res(JSON.parse(data))
+      }
+    })
+  })
 }
 
 function matchParentsWithChildren(parentFileName, childrenFileName) {
   // your code here... (p.s. readFilePromise function(s) should be around here..)
+  let parents = []
+  readFilePromise(parentFileName)
+  .then(data => {
+    for(let i = 0; i < data.length; i++) {
+      parents.push(data[i])
+    }
+    return readFilePromise(childrenFileName)
+  })
+  .then(data => {
+    for(let i = 0; i < parents.length; i++) {
+      parents[i].childs = []
+      for(let j = 0; j < data.length; j++) {
+        if(data[j].family == parents[i].last_name) {
+          parents[i].childs.push(data[j].full_name)
+        }
+      }
+    }
+    console.log(parents)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
+
 }
 
 matchParentsWithChildren('./parents.json', './children.json');
 console.log("Notification : Data sedang diproses !");
 
 // for Release 2
-matchParentsWithChildren('./parents.json', './not_a_real_file.json');
-matchParentsWithChildren('./not_a_real_file.json', './also_not_a_real_file.json');
+// matchParentsWithChildren('./parents.json', './not_a_real_file.json');
+// matchParentsWithChildren('./not_a_real_file.json', './also_not_a_real_file.json');
