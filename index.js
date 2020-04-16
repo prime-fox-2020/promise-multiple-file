@@ -22,9 +22,8 @@ function readFilePromise(path) {
   })
 }
 
-let result 
-
 function matchParentsWithChildren(parentFileName, childrenFileName) {
+  let result
   readFilePromise(parentFileName)
   .then( dataParents => {
     result = dataParents
