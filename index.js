@@ -24,15 +24,15 @@ function readFilePromise(path) {
 
 function matchParentsWithChildren(parentFileName, childrenFileName) {
   // your code here... (p.s. readFilePromise function(s) should be around here..)
-  let parents = []
+  let parents
   readFilePromise(parentFileName)
   .then(data => {
-    for(let i = 0; i < data.length; i++) {
-      parents.push(data[i])
-    }
+    sleep(5000)
+    parents = data
     return readFilePromise(childrenFileName)
   })
   .then(data => {
+    sleep(5000)
     for(let i = 0; i < parents.length; i++) {
       parents[i].childs = []
       for(let j = 0; j < data.length; j++) {
@@ -46,13 +46,11 @@ function matchParentsWithChildren(parentFileName, childrenFileName) {
   .catch(err => {
     console.log(err)
   })
-
-
 }
 
 matchParentsWithChildren('./parents.json', './children.json');
 console.log("Notification : Data sedang diproses !");
 
-// for Release 2
+// // for Release 2
 // matchParentsWithChildren('./parents.json', './not_a_real_file.json');
 // matchParentsWithChildren('./not_a_real_file.json', './also_not_a_real_file.json');
