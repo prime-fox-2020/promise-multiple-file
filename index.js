@@ -9,12 +9,44 @@ function sleep(milliseconds) {
   }
 }
 
-function readFilePromise() {
-  // psst, the promise should be around here...
+function readFilePromise(path) {
+  return new Promise ((res,rej)=>{
+    fs.readFile(path, 'utf8', (err,data)=>{
+      if(err){
+        rej(err)
+      }else{
+        res(JSON.parse(data))
+      }
+    })
+  })
 }
 
 function matchParentsWithChildren(parentFileName, childrenFileName) {
-  // your code here... (p.s. readFilePromise function(s) should be around here..)
+  let parent_data;
+  readFilePromise(parentFileName)
+  .then(dataParents=>{
+    sleep(5000)
+    parent_data = dataParents
+    // console.log(parent_data);
+    return readFilePromise(childrenFileName)
+  })
+  .then(dataChildrens=>{
+    sleep(5000)
+    // dataChildrens
+    // console.log(parent_data);
+    for (let i = 0; i < parent_data.length; i++) {
+      parent_data[i].children = []
+      for (let j = 0; j < dataChildrens.length; j++) {
+        if(parent_data[i].last_name === dataChildrens[j].family){
+          parent_data[i].children.push(dataChildrens[j].full_name)
+        }
+      }
+    }
+    console.log(parent_data);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 }
 
 matchParentsWithChildren('./parents.json', './children.json');
