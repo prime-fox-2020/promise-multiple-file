@@ -84,5 +84,5 @@ matchParentsWithChildren('./parents.json', './children.json');
 console.log("Notification : Data sedang diproses !");
 
 // for Release 2
-// matchParentsWithChildren('./parents.json', './not_a_real_file.json');
-// matchParentsWithChildren('./not_a_real_file.json', './also_not_a_real_file.json');
+matchParentsWithChildren('./parents.json', './not_a_real_file.json');
+matchParentsWithChildren('./not_a_real_file.json', './also_not_a_real_file.json');
